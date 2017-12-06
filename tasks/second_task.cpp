@@ -1,11 +1,41 @@
 #include <iostream>
 #include <vector>
-#include <string>
+#include <cmath>
 #include <algorithm>
+#include <unordered_set>
 #include <sstream>
 
+using std::string; using std::vector; using std::cin; using std::cout; using std::endl;
+
+long count_minmax(const vector<vector<int>> &numbers) {
+    long result = 0;
+    for (const vector<int> &row: numbers) {
+        auto min_max = std::minmax_element(row.begin(), row.end());
+        result += (*min_max.second) - (*min_max.first);
+    }
+    return result;
+}
+
+long evenly_divisible_values(const vector<vector<int>> &numbers) {
+    long result = 0;
+    for (const vector<int> &row: numbers) {
+        for (std::remove_const_t<decltype(row.size())> i = 0; i != row.size(); ++i) {
+            auto i_number = row[i];
+            for (std::remove_const_t<decltype(row.size())> j = i + 1; j != row.size(); ++j) {
+                auto j_number = row[j];
+                auto minmax = std::minmax(j_number, i_number);
+                if (minmax.second % minmax.first == 0) {
+                    result += minmax.second / minmax.first;
+                    goto next;
+                }
+            }
+        }
+        next:;
+    }
+    return result;
+}
+
 int main() {
-    using std::string; using std::vector; using std::cin; using std::cout; using std::endl;
     const vector<string> input_raw{
             "3093 749 3469 142 2049 3537 1596 3035 2424 3982 3290 125 249 131 118 3138",
             "141 677 2705 2404 2887 2860 1123 2714 117 1157 2607 1800 153 130 1794 3272",
@@ -24,26 +54,23 @@ int main() {
             "151 3473 1435 87 1517 1480 140 2353 1293 118 163 3321 2537 3061 1532 3402",
             "127 375 330 257 220 295 145 335 304 165 151 141 289 256 195 272"
     };
-
-    const auto conversion_function = [](const std::string &str) {
-        string buf;
-        std::stringstream ss(str);
-        vector<int> tokens;
-        while (ss >> buf) {
-            tokens.push_back(std::stoi(buf));
-        }
-        return tokens;
-    };
     vector<vector<int>> input_numbers;
     for (const auto &row:input_raw) {
-        input_numbers.push_back(conversion_function(row));
+        input_numbers.push_back(([](const std::string_view &str) {
+            string buf;
+            std::stringstream ss(str.data());
+            vector<int> numbers;
+            while (ss >> buf) {
+                numbers.push_back(std::stoi(buf));
+            }
+            return numbers;
+        })(row));
     }
-    long result = 0;
-    for (const vector<int> &row: input_numbers) {
-        auto min_max = std::minmax_element(row.begin(), row.end());
-        result += (*min_max.second) - (*min_max.first);
-    }
-    cout << result;
-    cin.get();
+
+    long result = count_minmax(input_numbers);
+    cout << result << endl;
+
+    result = evenly_divisible_values(input_numbers);
+    cout << result << endl;
     return 0;
 }

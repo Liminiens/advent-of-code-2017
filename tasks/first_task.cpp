@@ -2,9 +2,9 @@
 
 long solve_captcha(std::string const &numbers_str) {
     long count = 0;
-    const auto size{numbers_str.size()};
+    const auto size = numbers_str.size();
     const auto char_to_int = [](const char &c) -> int { return c - '0'; };
-    for (long long i = 0; i < size; ++i) {
+    for (std::remove_const_t<decltype(size)> i = 0; i < size; ++i) {
         auto i_number{char_to_int(numbers_str[i])};
         if (char_to_int(numbers_str[(i + 1) % size]) == i_number) {
             count += i_number;
@@ -15,9 +15,9 @@ long solve_captcha(std::string const &numbers_str) {
 
 long solve_captcha_half(std::string const &numbers_str) {
     long count = 0;
-    const auto size{numbers_str.size()};
+    const auto size = numbers_str.size();
     const auto char_to_int = [](const char &c) -> int { return c - '0'; };
-    for (long long i = 0; i < size; ++i) {
+    for (std::remove_const_t<decltype(size)> i = 0; i < size; ++i) {
         auto i_number{char_to_int(numbers_str[i])};
         if (char_to_int(numbers_str[(i + size / 2) % size]) == i_number) {
             count += i_number;
