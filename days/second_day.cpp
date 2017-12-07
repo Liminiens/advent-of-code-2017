@@ -56,7 +56,7 @@ int main() {
     };
     vector<vector<int>> input_numbers;
     for (const auto &row:input_raw) {
-        input_numbers.push_back(([](const std::string_view &str) {
+        input_numbers.push_back([](const std::string_view &str) {
             string buf;
             std::stringstream ss(str.data());
             vector<int> numbers;
@@ -64,7 +64,7 @@ int main() {
                 numbers.push_back(std::stoi(buf));
             }
             return numbers;
-        })(row));
+        }(row));
     }
 
     long result = count_minmax(input_numbers);
